@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALDITH — A Year of Divinations · a tarot roguelike by Gand Games</title>
+<meta name="description" content="Eight Lords broke the Reader's deck so their seasons would never end. Aldith walks the year from Yule to Samhain and reads for each Lord on his own terms. A tarot roguelike, coming soon from Gand Games.">
+<link rel="canonical" href="https://aldith.gand.games/">
+<meta name="theme-color" content="#151019">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ALDITH — A Year of Divinations">
+<meta property="og:description" content="Read for the Lords. Turn the year. A tarot roguelike in twenty-four trials — coming soon from Gand Games.">
+<meta property="og:url" content="https://aldith.gand.games/">
+<meta property="og:image" content="https://aldith.gand.games/public/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aldith key art — an old reader in a hooded cloak holds three cards on a snowy road, eight halls on eight hills behind her.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="Aldith key art — an old reader in a hooded cloak holds three cards on a snowy road, eight halls on eight hills behind her.">
+<link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="public/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Aldith",
+  "alternateName": "Aldith — A Year of Divinations",
+  "url": "https://aldith.gand.games/",
+  "description": "A single-player tarot roguelike. Aldith walks the Wheel of the Year, reading fortunes for two petitioners and a Lord each season — twenty-four trials in all.",
+  "image": "https://aldith.gand.games/public/og.jpg",
+  "genre": ["Card Game", "Roguelike", "Dark Fantasy"],
+  "gamePlatform": ["PC", "Linux"],
+  "operatingSystem": ["Windows", "Linux"],
+  "playMode": "SinglePlayer",
+  "applicationCategory": "Game",
+  "inLanguage": "en",
+  "publisher": { "@type": "Organization", "name": "Gand Games", "url": "https://gand.games/" },
+  "author": { "@type": "Organization", "name": "Gand", "url": "https://gand.tr/" }
+}
+</script>
+<style>
+/* ── The Reader's almanac · gold ink on midnight ────────────── */
+@font-face{font-family:"Cormorant Garamond";src:url(public/fonts/cormorant.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Cormorant Garamond";src:url(public/fonts/cormorant-italic.ttf) format("truetype");font-style:italic;font-weight:400;font-display:swap}
+@font-face{font-family:"Cormorant Garamond";src:url(public/fonts/cormorant-600.ttf) format("truetype");font-weight:600;font-display:swap}
+@font-face{font-family:"DM Sans";src:url(public/fonts/dmsans.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"DM Sans";src:url(public/fonts/dmsans-500.ttf) format("truetype");font-weight:500;font-display:swap}
+
+:root{
+  --ink:#151019;           /* the table at midnight */
+  --leaf:#1d1622;          /* a page of the book    */
+  --leaf-edge:#0c0810;
+  --parch:#e9dfc8;         /* old paper             */
+  --parch-dim:#b9ad93;
+  --gold:#c5a06a;          /* the eight-point star  */
+  --gold-dim:#8a7350;
+  --blood:#7e3b32;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  background-image:
+    radial-gradient(ellipse 130% 80% at 50% -20%, #241a2c 0%, #151019 60%, #0e0a12 100%);
+  color:var(--parch);
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:19px; line-height:1.6;
+  padding:0 14px 90px;
+}
+/* grain over everything */
+body::after{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection{background:var(--gold); color:var(--ink)}
+img{max-width:100%; display:block}
+a{color:var(--parch)}
+
+/* ── masthead / colophon ── */
+.masthead,.colophon{
+  max-width:880px; margin:0 auto; padding:16px 4px 30px;
+  display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+  color:var(--parch-dim); font-family:"DM Sans",sans-serif; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+}
+.masthead a,.colophon a{color:var(--parch); text-decoration:none; border-bottom:1px solid var(--gold); padding-bottom:2px}
+.masthead a:hover,.masthead a:focus-visible,.colophon a:hover,.colophon a:focus-visible{color:var(--gold); outline:none}
+@media (max-width:560px){.masthead{flex-direction:column;gap:6px}}
+
+/* ── leaves of the book ── */
+.leaf{
+  position:relative; max-width:840px; margin:0 auto 64px;
+  background:var(--leaf);
+  border:1px solid var(--gold-dim);
+  box-shadow:0 0 0 1px var(--leaf-edge), 10px 14px 34px rgba(0,0,0,.55);
+  padding:50px 56px 52px;
+}
+/* double rule, as on a title page */
+.leaf::before{
+  content:""; position:absolute; inset:7px; pointer-events:none;
+  border:1px solid rgba(197,160,106,.28);
+}
+@media (max-width:640px){.leaf{padding:36px 22px 40px}}
+
+.leaflab{
+  position:absolute; top:-13px; left:36px; z-index:2;
+  background:var(--ink); padding:3px 14px;
+  font-family:"DM Sans",sans-serif; font-size:11.5px; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--gold); border:1px solid var(--gold-dim);
+}
+.leaf:nth-of-type(even) .leaflab{left:auto; right:36px}
+
+h1{
+  font-weight:600; text-align:center;
+  font-size:clamp(58px,11vw,118px); line-height:1; letter-spacing:.18em; text-indent:.18em;
+  margin:16px 0 4px; color:var(--parch);
+  text-shadow:0 2px 24px rgba(197,160,106,.18);
+}
+.subtitle{
+  text-align:center; font-family:"DM Sans",sans-serif; font-size:13px; letter-spacing:.42em; text-indent:.42em;
+  text-transform:uppercase; color:var(--gold); margin:10px 0 0;
+}
+.motto{
+  text-align:center; font-style:italic; font-size:clamp(19px,2.6vw,23px); color:var(--parch);
+  margin:22px 0 0;
+}
+.motto em{font-style:italic; color:var(--gold)}
+
+h2{
+  font-weight:600; font-size:clamp(28px,4vw,38px); line-height:1.1; letter-spacing:.06em;
+  margin:0 0 6px; color:var(--parch);
+}
+h2 .no{color:var(--gold); font-weight:400; font-style:italic; margin-right:.35em}
+h3{font-family:"DM Sans",sans-serif; font-weight:500; font-size:13px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold)}
+h3.center{text-align:center}
+h3.lords-h{margin-top:30px}
+.note-spaced{margin-top:20px}
+
+p{margin:0 0 15px}
+.reading{max-width:58ch}
+.note{font-size:16px; color:var(--parch-dim); font-style:italic}
+
+/* ornament divider */
+.orn{display:flex; align-items:center; gap:16px; margin:26px auto; color:var(--gold)}
+.orn::before,.orn::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold-dim))}
+.orn::after{background:linear-gradient(90deg,var(--gold-dim),transparent)}
+.orn svg{width:22px; height:22px; flex:none}
+
+/* hero: text + plate */
+.coverline{display:grid; grid-template-columns:1.08fr .92fr; gap:42px; align-items:start; margin-top:30px}
+@media (max-width:720px){.coverline{grid-template-columns:1fr}}
+
+.plate{position:relative}
+.plate img{
+  width:100%; height:auto; display:block;
+  border:1px solid var(--gold-dim); outline:1px solid var(--leaf-edge); outline-offset:3px;
+  box-shadow:8px 10px 26px rgba(0,0,0,.6);
+}
+.plate figcaption{
+  font-family:"DM Sans",sans-serif; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--parch-dim); margin-top:14px; text-align:center;
+}
+
+/* the seal */
+.seal{
+  position:absolute; top:-34px; right:-22px; z-index:5;
+  width:118px; height:118px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+  background:radial-gradient(circle at 38% 32%, #93483c, var(--blood) 62%, #5f2a23);
+  border:2px solid #a4584b;
+  box-shadow:0 6px 18px rgba(0,0,0,.55), inset 0 0 0 4px rgba(21,16,25,.28);
+  color:#f0ddc4; transform:rotate(9deg);
+  font-family:"DM Sans",sans-serif; font-size:11px; letter-spacing:.24em; text-transform:uppercase; text-align:center;
+  animation:seal-in .5s cubic-bezier(.2,1.6,.4,1) .45s both;
+}
+.seal svg{width:20px; height:20px}
+.seal small{font-size:9px; letter-spacing:.3em; color:#d8bfa4}
+@keyframes seal-in{
+  from{opacity:0; transform:rotate(-14deg) scale(2)}
+  70%{opacity:1; transform:rotate(11deg) scale(.96)}
+  to{opacity:1; transform:rotate(9deg) scale(1)}
+}
+@media (max-width:640px){.seal{position:static; margin:22px auto 4px; animation-delay:.2s}}
+
+/* spec table */
+.spec{margin-top:28px; border-top:1px solid var(--gold-dim)}
+.spec div{display:flex; justify-content:space-between; gap:20px; padding:8px 2px; border-bottom:1px solid rgba(138,115,80,.35); font-size:16.5px}
+.spec span:first-child{font-family:"DM Sans",sans-serif; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--parch-dim); padding-top:4px}
+.spec span:last-child{text-align:right}
+.spec .hot{color:var(--gold); font-style:italic}
+
+/* the lords */
+.lords{display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:26px; background:rgba(138,115,80,.4); border:1px solid rgba(138,115,80,.4)}
+@media (max-width:640px){.lords{grid-template-columns:1fr}}
+.lord{background:var(--leaf); padding:18px 20px 16px}
+.lord .feast{font-family:"DM Sans",sans-serif; font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold)}
+.lord .name{font-size:21px; font-weight:600; letter-spacing:.03em; margin:5px 0 3px}
+.lord .ask{font-style:italic; color:var(--parch-dim); font-size:16.5px}
+
+/* plates gallery */
+.plates{display:grid; grid-template-columns:1fr 1fr; gap:36px 30px; margin-top:28px}
+@media (max-width:640px){.plates{grid-template-columns:1fr}}
+.plates figure{margin:0}
+.plates a{
+  display:block; border:1px solid var(--gold-dim); outline:1px solid var(--leaf-edge); outline-offset:3px;
+  box-shadow:6px 8px 22px rgba(0,0,0,.55); transition:transform .16s ease, box-shadow .16s ease;
+}
+.plates a:hover,.plates a:focus-visible{transform:translate(-2px,-3px); box-shadow:9px 12px 26px rgba(0,0,0,.55); outline-color:var(--gold)}
+.plates img{width:100%; height:auto}
+.plates figcaption{font-family:"DM Sans",sans-serif; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--parch-dim); margin-top:12px; text-align:center}
+.plates figure:last-child{grid-column:1/-1; width:min(76%,480px); margin:0 auto}
+
+/* her craft */
+.craft{list-style:none; counter-reset:rite; margin-top:24px; max-width:62ch}
+.craft li{counter-increment:rite; position:relative; padding:11px 0 11px 3.4em; border-bottom:1px solid rgba(138,115,80,.35)}
+.craft li::before{
+  content:counter(rite,upper-roman); position:absolute; left:2px; top:11px;
+  font-style:italic; color:var(--gold); font-size:18px;
+}
+.craft b{font-weight:600; color:var(--parch)}
+
+/* ctas */
+.ctas{display:flex; flex-wrap:wrap; gap:16px; margin-top:24px}
+.btn{
+  font-family:"DM Sans",sans-serif; font-size:12.5px; letter-spacing:.22em; text-transform:uppercase;
+  border:1px solid var(--gold-dim); padding:14px 24px; text-decoration:none;
+  color:var(--ink); background:var(--gold);
+  box-shadow:4px 5px 0 rgba(12,8,16,.9); transition:transform .14s ease, box-shadow .14s ease;
+}
+.btn:hover,.btn:focus-visible{transform:translate(-1px,-2px); box-shadow:6px 8px 0 rgba(12,8,16,.9); outline:none; color:var(--ink)}
+.btn.ghost{background:transparent; color:var(--parch); box-shadow:4px 5px 0 rgba(12,8,16,.5)}
+.btn.ghost:hover,.btn.ghost:focus-visible{color:var(--gold); border-color:var(--gold)}
+
+.colophon{padding:6px 4px 0; text-align:center; display:block}
+.colophon .quote{
+  display:block; margin-top:16px;
+  font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:17px; letter-spacing:.04em;
+  text-transform:none; color:var(--gold-dim);
+}
+
+/* entrance: the leaves settle onto the table */
+@media (prefers-reduced-motion: no-preference){
+  .leaf{animation:lay .55s ease-out both}
+  .leaf:nth-of-type(1){animation-delay:.05s}
+  .leaf:nth-of-type(2){animation-delay:.15s}
+  .leaf:nth-of-type(3){animation-delay:.25s}
+  .leaf:nth-of-type(4){animation-delay:.35s}
+  .leaf:nth-of-type(5){animation-delay:.45s}
+  @keyframes lay{from{opacity:0; translate:0 24px} to{opacity:1; translate:0 0}}
+}
+@media (prefers-reduced-motion: reduce){
+  .seal{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a href="https://gand.games/">← Gand Games</a>
+  <span>The Wheel of the Year · Entry № I</span>
+</header>
+
+<main>
+
+<!-- LEAF I — THE COVER -->
+<section class="leaf" aria-labelledby="t">
+  <span class="leaflab">Leaf I · The Cover</span>
+  <h3 class="center">Gand Games presents · a reading in twenty-four trials</h3>
+  <h1 id="t">ALDITH</h1>
+  <p class="subtitle">A Year of Divinations</p>
+  <p class="motto">Read for the Lords. <em>Turn the year.</em></p>
+
+  <div class="orn" aria-hidden="true">
+    <svg viewBox="0 0 64 64" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+  </div>
+
+  <div class="coverline">
+    <div>
+      <p class="reading">Eight Lords broke the Reader's deck, so their seasons would never end. Aldith walks the year from Yule to Samhain, reads for the road, and reads for each Lord on his own terms. Tell him true, and his relic comes back to her hand.</p>
+      <p class="reading">Eight halls. Eight relics. One deck to make whole — and at Samhain she lays one more spread, <b>and it is not for the Lord.</b></p>
+      <p class="note">A single-player tarot roguelike, engraved in gold and midnight. Coming soon from Gand Games.</p>
+      <div class="spec">
+        <div><span>Genre</span><span>TAROT ROGUELIKE</span></div>
+        <div><span>Platform</span><span>WINDOWS · LINUX</span></div>
+        <div><span>Trials</span><span>24 — TWO ON THE ROAD, THEN THE HALL</span></div>
+        <div><span>Deck</span><span>40 PIPS · 22 TRUMPS</span></div>
+        <div><span>Status</span><span class="hot">Coming soon — no date yet</span></div>
+        <div><span>Made by</span><span>GAND GAMES</span></div>
+      </div>
+    </div>
+    <figure class="plate">
+      <div class="seal" role="img" aria-label="Coming soon">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+        Coming<br>Soon
+        <small>PC</small>
+      </div>
+      <img src="public/keyart.jpg" width="748" height="896" alt="Key art: Aldith, an old woman with a long grey braid, lays five cards by candlelight — wand, cup, star, coin and sword — a black cat watching from the dark window.">
+      <figcaption>Plate I — The Reader at her table</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- LEAF II — THE STORY SO FAR -->
+<section class="leaf" aria-labelledby="t2">
+  <span class="leaflab">Leaf II · The Story So Far</span>
+  <h2 id="t2"><span class="no">II —</span> The year that will not turn</h2>
+  <div class="orn" aria-hidden="true">
+    <svg viewBox="0 0 64 64" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+  </div>
+  <p class="reading">Aldith was the Reader of the Wheel. In the old custom a Lord's season ended when she laid the cards before him and told him so: he stepped down, the next Lord rose, and the year turned. One winter the Lords agreed among themselves that no ending would be read again. They broke her deck across the eight halls, kept one trump each as a relic of the house, and put her out of the gate with forty pips.</p>
+  <p class="reading">She comes back old. Bad knee, good eyes, the patience of stone. She walks the year from Yule to Samhain, one hall a season, and reads first for a Lord's people at the roadside, whose coin buys her way to his table. Each Lord hears her only on his own terms. The Frozen Lord turns every Cup. The Widow keeps every blade outside her door. The Child hears nothing above five. Each wants one thing told true.</p>
+  <p class="reading">Tell it, and the relic comes back to her hand. Eight halls, eight relics, and at Samhain the deck is whole.</p>
+
+  <h3 class="lords-h">The Eight Lords, and what they ask</h3>
+  <div class="lords">
+    <div class="lord"><div class="feast">Yule</div><div class="name">The Frozen Lord</div><div class="ask">“Will the sun return if I do not call it?”</div></div>
+    <div class="lord"><div class="feast">Imbolc</div><div class="name">The Widow</div><div class="ask">“Does he still walk, somewhere?”</div></div>
+    <div class="lord"><div class="feast">Ostara</div><div class="name">The Child</div><div class="ask">“Must I grow old?”</div></div>
+    <div class="lord"><div class="feast">Beltane</div><div class="name">The Lovers</div><div class="ask">“Which of us will keep the seat?”</div></div>
+    <div class="lord"><div class="feast">Litha</div><div class="name">The Sun King</div><div class="ask">“Is there an hour I do not rule?”</div></div>
+    <div class="lord"><div class="feast">Lughnasadh</div><div class="name">The Reaper</div><div class="ask">“What have I cut that will not grow back?”</div></div>
+    <div class="lord"><div class="feast">Mabon</div><div class="name">The Judge</div><div class="ask">“Have I weighed true?”</div></div>
+    <div class="lord"><div class="feast">Samhain</div><div class="name">The Veiled Lord</div><div class="ask">“And what waits for you?”</div></div>
+  </div>
+</section>
+
+<!-- LEAF III — PLATES -->
+<section class="leaf" aria-labelledby="t3">
+  <span class="leaflab">Leaf III · Plates</span>
+  <h2 id="t3"><span class="no">III —</span> From the book of the year</h2>
+  <div class="orn" aria-hidden="true">
+    <svg viewBox="0 0 64 64" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+  </div>
+  <div class="plates">
+    <figure><a href="public/shots/01-telling.jpg"><img src="public/shots/01-telling.jpg" width="1920" height="1080" loading="lazy" alt="The Telling: in a candlelit hall above a snowy valley, the young Reader lays cards for a crowned king while his court watches."></a><figcaption>Plate II — The Telling: the old custom</figcaption></figure>
+    <figure><a href="public/shots/02-table.jpg"><img src="public/shots/02-table.jpg" width="1920" height="1080" loading="lazy" alt="The reading table: the Line of three laid for the Charcoal Burner — cups, swords and a silent reversed card, five more in hand."></a><figcaption>Plate III — The Line laid for the Charcoal Burner</figcaption></figure>
+    <figure><a href="public/shots/03-arrival.jpg"><img src="public/shots/03-arrival.jpg" width="1920" height="1080" loading="lazy" alt="The hall of Yule: the Frozen Lord enthroned in ice and candle-smoke, setting his terms for the audience."></a><figcaption>Plate IV — The Frozen Lord's terms</figcaption></figure>
+    <figure><a href="public/shots/04-market.jpg"><img src="public/shots/04-market.jpg" width="1920" height="1080" loading="lazy" alt="The Night Market between the veils: stalls of trumps and rites, where the road sells back what it took."></a><figcaption>Plate V — The Night Market</figcaption></figure>
+    <figure><a href="public/shots/05-ending.jpg"><img src="public/shots/05-ending.jpg" width="1920" height="1080" loading="lazy" alt="At Samhain the deck is whole: one last spread laid by lamplight, and it is not for the Lord."></a><figcaption>Plate VI — The last spread</figcaption></figure>
+  </div>
+</section>
+
+<!-- LEAF IV — HER CRAFT -->
+<section class="leaf" aria-labelledby="t4">
+  <span class="leaflab">Leaf IV · Her Craft</span>
+  <h2 id="t4"><span class="no">IV —</span> How a reading is made</h2>
+  <div class="orn" aria-hidden="true">
+    <svg viewBox="0 0 64 64" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+  </div>
+  <ol class="craft">
+    <li><b>Twenty-four trials.</b> Eight seasons from Yule to Samhain: two readings on the road, then the hall.</li>
+    <li><b>Three spreads.</b> The Line of three, the Crossing of five, the Horseshoe of seven. Every position has a name and a hunger.</li>
+    <li><b>Upright and reversed.</b> A reversed card says nothing — unless the position wanted it that way, the whole spread is dark, or a trump says otherwise.</li>
+    <li><b>Dignities and threads.</b> Neighbouring cards agree or quarrel by their element, and a whole spread can speak at once: a Current, an Ascent, a Dark Mirror.</li>
+    <li><b>Rites.</b> A blessing keeps a card upright. A curse turns it. A burning is a card the deck no longer needs.</li>
+    <li><b>The Night Market</b> sells back what the road took: the twenty-two trumps, to lay in a spread — or to bind as Patrons that watch instead of speaking.</li>
+    <li><b>An original soundtrack.</b> The Velvet Hour on the road and at the market, the Lord's Hour in an audience — and engraved art throughout.</li>
+  </ol>
+</section>
+
+<!-- LEAF V — NOTIFICATION -->
+<section class="leaf" aria-labelledby="t5">
+  <span class="leaflab">Leaf V · Notification</span>
+  <h2 id="t5"><span class="no">V —</span> When the year turns</h2>
+  <div class="orn" aria-hidden="true">
+    <svg viewBox="0 0 64 64" focusable="false"><path d="m32 5 5 20 16-14-14 16 20 5-20 5 14 16-16-14-5 20-5-20-16 14 14-16-20-5 20-5-14-16 16 14Z" fill="currentColor"/></svg>
+  </div>
+  <p class="reading">Aldith is on the road to Steam, for Windows and Linux. No storefront has opened its gate yet — to be told when the year turns, write to the studio, or call at the label's house.</p>
+  <div class="ctas">
+    <a class="btn" href="mailto:contact@gand.tr?subject=Aldith%20—%20tell%20me%20when%20the%20year%20turns">Tell me when it turns ✉</a>
+    <a class="btn ghost" href="https://gand.games/">The label · gand.games ↗</a>
+  </div>
+  <p class="note note-spaced">Published by Gand Games. No ads. No tracking. The price, when named, is the price.</p>
+</section>
+
+</main>
+
+<footer class="colophon">
+  <p>© 2026 <a href="https://gand.games/">Gand Games</a> · The Wheel is fictional · the deck remembers
+  <span class="quote">“She cannot die, she says, until the last card is read — and she has decided to take that as a promise.”</span></p>
+</footer>
+
+</body>
+</html>
