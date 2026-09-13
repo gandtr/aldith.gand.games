@@ -16,6 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Aldith key art — an old reader in a hooded cloak holds three cards on a snowy road, eight halls on eight hills behind her.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://aldith.gand.games/public/og.jpg">
 <meta name="twitter:image:alt" content="Aldith key art — an old reader in a hooded cloak holds three cards on a snowy road, eight halls on eight hills behind her.">
 <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="public/apple-touch-icon.png">
@@ -131,7 +132,7 @@ h2{
 }
 h2 .no{color:var(--gold); font-weight:400; font-style:italic; margin-right:.35em}
 h3{font-family:"DM Sans",sans-serif; font-weight:500; font-size:13px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold)}
-h3.center{text-align:center}
+.kicker{font-family:"DM Sans",sans-serif; font-weight:500; font-size:13px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold); text-align:center}
 h3.lords-h{margin-top:30px}
 .note-spaced{margin-top:20px}
 
@@ -248,6 +249,7 @@ p{margin:0 0 15px}
   @keyframes lay{from{opacity:0; translate:0 24px} to{opacity:1; translate:0 0}}
 }
 @media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
   .seal{animation:none}
 }
 </style>
@@ -264,7 +266,7 @@ p{margin:0 0 15px}
 <!-- LEAF I — THE COVER -->
 <section class="leaf" aria-labelledby="t">
   <span class="leaflab">Leaf I · The Cover</span>
-  <h3 class="center">Gand Games presents · a reading in twenty-four trials</h3>
+  <p class="kicker">Gand Games presents · a reading in twenty-four trials</p>
   <h1 id="t">ALDITH</h1>
   <p class="subtitle">A Year of Divinations</p>
   <p class="motto">Read for the Lords. <em>Turn the year.</em></p>
@@ -332,9 +334,9 @@ p{margin:0 0 15px}
   </div>
   <div class="plates">
     <figure><a href="public/shots/01-telling.jpg"><img src="public/shots/01-telling.jpg" width="1920" height="1080" loading="lazy" alt="The Telling: in a candlelit hall above a snowy valley, the young Reader lays cards for a crowned king while his court watches."></a><figcaption>Plate II — The Telling: the old custom</figcaption></figure>
-    <figure><a href="public/shots/02-table.jpg"><img src="public/shots/02-table.jpg" width="1920" height="1080" loading="lazy" alt="The reading table: the Line of three laid for the Charcoal Burner — cups, swords and a silent reversed card, five more in hand."></a><figcaption>Plate III — The Line laid for the Charcoal Burner</figcaption></figure>
+    <figure><a href="public/shots/02-table.jpg"><img src="public/shots/02-table.jpg" width="1920" height="1080" loading="lazy" alt="The reading table: the Line of three laid for the Charcoal Burner — cups, a silent wand, and swords, five more cards in hand."></a><figcaption>Plate III — The Line laid for the Charcoal Burner</figcaption></figure>
     <figure><a href="public/shots/03-arrival.jpg"><img src="public/shots/03-arrival.jpg" width="1920" height="1080" loading="lazy" alt="The hall of Yule: the Frozen Lord enthroned in ice and candle-smoke, setting his terms for the audience."></a><figcaption>Plate IV — The Frozen Lord's terms</figcaption></figure>
-    <figure><a href="public/shots/04-market.jpg"><img src="public/shots/04-market.jpg" width="1920" height="1080" loading="lazy" alt="The Night Market between the veils: stalls of trumps and rites, where the road sells back what it took."></a><figcaption>Plate V — The Night Market</figcaption></figure>
+    <figure><a href="public/shots/04-market.jpg"><img src="public/shots/04-market.jpg" width="1920" height="1080" loading="lazy" alt="The Night Market between the veils: trumps and rites on offer, where the road sells back what it took."></a><figcaption>Plate V — The Night Market</figcaption></figure>
     <figure><a href="public/shots/05-ending.jpg"><img src="public/shots/05-ending.jpg" width="1920" height="1080" loading="lazy" alt="At Samhain the deck is whole: one last spread laid by lamplight, and it is not for the Lord."></a><figcaption>Plate VI — The last spread</figcaption></figure>
   </div>
 </section>
@@ -376,7 +378,7 @@ p{margin:0 0 15px}
 
 <footer class="colophon">
   <p>© 2026 <a href="https://gand.games/">Gand Games</a> · The Wheel is fictional · the deck remembers
-  <span class="quote">“She cannot die, she says, until the last card is read — and she has decided to take that as a promise.”</span></p>
+  <span class="quote">“She cannot die, she says, until the last card is read, and she has decided to take that as a promise rather than a curse.”</span></p>
 </footer>
 
 </body>
