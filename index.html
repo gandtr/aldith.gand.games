@@ -121,6 +121,8 @@ h1{
   margin:16px 0 4px; color:var(--parch);
   text-shadow:0 2px 24px rgba(197,160,106,.18);
 }
+/* Keep the tracked title within the paper frame on narrow phones. */
+@media (max-width:400px){h1{font-size:14vw}}
 .subtitle{
   text-align:center; font-family:"DM Sans",sans-serif; font-size:13px; letter-spacing:.42em; text-indent:.42em;
   text-transform:uppercase; color:var(--gold); margin:10px 0 0;
@@ -240,7 +242,7 @@ p{margin:0 0 15px}
 .colophon .quote{
   display:block; margin-top:16px;
   font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:17px; letter-spacing:.04em;
-  text-transform:none; color:var(--gold-dim);
+  text-transform:none; color:var(--parch-dim);
 }
 
 /* entrance: the leaves settle onto the table */
